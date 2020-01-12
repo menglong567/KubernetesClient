@@ -5,6 +5,7 @@ import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.openapi.models.V1Pod;
 import io.kubernetes.client.openapi.models.V1PodList;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,7 +14,7 @@ import java.util.logging.Logger;
  * kubernetes cluster
  */
 public class KubeConfigFileClientExample {
-    public static void main(String[] args){
+    public static void main(String[] args) {
         try {
             KubernetesClientApiClient.getInstance();
             CoreV1Api api = new CoreV1Api();

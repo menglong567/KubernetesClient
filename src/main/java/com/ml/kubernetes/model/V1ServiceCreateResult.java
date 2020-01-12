@@ -3,7 +3,6 @@ package com.ml.kubernetes.model;
 import io.kubernetes.client.openapi.models.V1Service;
 
 /**
- *
  * @author Liudan_Luo
  */
 public class V1ServiceCreateResult {
@@ -22,6 +21,7 @@ public class V1ServiceCreateResult {
     public void setResult(boolean result) {
         this.result = result;
     }
+
     private V1Service srv;
     private boolean result;
 }

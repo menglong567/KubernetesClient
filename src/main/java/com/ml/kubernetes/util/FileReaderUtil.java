@@ -6,7 +6,6 @@ import java.io.FileReader;
 import java.io.IOException;
 
 /**
- *
  * @author Liudan_Luo
  */
 public class FileReaderUtil {
@@ -20,9 +19,8 @@ public class FileReaderUtil {
     }
 
     /**
-     * 
      * @param fileName
-     * @return 
+     * @return
      */
     public String readFileByLines(String fileName) {
         File file = new File(fileName);

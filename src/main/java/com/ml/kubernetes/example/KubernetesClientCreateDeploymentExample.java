@@ -9,7 +9,6 @@ import io.kubernetes.client.openapi.models.V1DeploymentSpec;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 
 /**
- *
  * @author Liudan_Luo
  */
 public class KubernetesClientCreateDeploymentExample {

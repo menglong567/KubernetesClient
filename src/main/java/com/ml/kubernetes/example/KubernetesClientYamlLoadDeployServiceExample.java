@@ -7,13 +7,13 @@ import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.openapi.models.V1Service;
 import io.kubernetes.client.openapi.models.V1Status;
 import io.kubernetes.client.util.Yaml;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
  * @author Liudan_Luo
  */
 public class KubernetesClientYamlLoadDeployServiceExample {

@@ -9,12 +9,12 @@ import io.kubernetes.client.openapi.models.V1Namespace;
 import io.kubernetes.client.openapi.models.V1NamespaceList;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1Status;
+
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
  * @author Liudan_Luo
  */
 public class KubernetesClientNamespaceUtil {
@@ -28,7 +28,6 @@ public class KubernetesClientNamespaceUtil {
     }
 
     /**
-     *
      * @param name
      * @return
      */
@@ -53,8 +52,6 @@ public class KubernetesClientNamespaceUtil {
     }
 
     /**
-     *
-     *
      * @param name
      * @return
      */
@@ -94,7 +91,6 @@ public class KubernetesClientNamespaceUtil {
     }
 
     /**
-     *
      * @param name
      * @param namespace
      * @return

@@ -3,7 +3,6 @@ package com.ml.kubernetes.model;
 import io.kubernetes.client.openapi.models.V1Deployment;
 
 /**
- *
  * @author Liudan_Luo
  */
 public class V1DeploymentCreateResult {

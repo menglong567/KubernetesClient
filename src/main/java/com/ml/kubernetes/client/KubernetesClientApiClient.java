@@ -9,6 +9,7 @@ import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.Configuration;
 import io.kubernetes.client.util.ClientBuilder;
 import io.kubernetes.client.util.KubeConfig;
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -16,7 +17,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
  * @author Liudan_Luo
  */
 public class KubernetesClientApiClient {
@@ -37,6 +37,6 @@ public class KubernetesClientApiClient {
     }
 
     public static KubernetesClientApiClient getInstance() {
-            return instance;
+        return instance;
     }
 }

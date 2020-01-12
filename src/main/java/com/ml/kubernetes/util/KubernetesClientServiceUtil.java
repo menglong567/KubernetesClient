@@ -6,11 +6,11 @@ import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.openapi.models.V1DeleteOptions;
 import io.kubernetes.client.openapi.models.V1Service;
 import io.kubernetes.client.openapi.models.V1Status;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
  * @author Liudan_Luo
  */
 public class KubernetesClientServiceUtil {
@@ -24,11 +24,10 @@ public class KubernetesClientServiceUtil {
     }
 
     /**
-     * 
      * @param api
      * @param service
      * @param namespace
-     * @return 
+     * @return
      */
     public V1ServiceCreateResult createService(CoreV1Api api, V1Service service, String namespace) {
         V1Service srv = null;
@@ -47,7 +46,6 @@ public class KubernetesClientServiceUtil {
     }
 
     /**
-     *
      * @param api
      * @param name
      * @param namespace

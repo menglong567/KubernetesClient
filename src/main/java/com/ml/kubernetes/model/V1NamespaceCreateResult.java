@@ -3,7 +3,6 @@ package com.ml.kubernetes.model;
 import io.kubernetes.client.openapi.models.V1Namespace;
 
 /**
- *
  * @author Liudan_Luo
  */
 public class V1NamespaceCreateResult {
@@ -25,5 +24,5 @@ public class V1NamespaceCreateResult {
     public void setResult(boolean result) {
         this.result = result;
     }
-    
+
 }
