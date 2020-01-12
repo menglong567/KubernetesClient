@@ -11,13 +11,14 @@ import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.openapi.models.V1Service;
 import io.kubernetes.client.openapi.models.V1StatefulSet;
 import io.kubernetes.client.util.Yaml;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.commons.text.StringSubstitutor;
 
 /**
- *
  * @author Liudan_Luo
  */
 public class MasterNodeCreator {
@@ -32,6 +33,7 @@ public class MasterNodeCreator {
 
     /**
      * **
+     * Parse template files and load one by one using loadAs
      *
      * @param masterNodeName
      * @param namespace
@@ -42,7 +44,7 @@ public class MasterNodeCreator {
      * @param cpuLimit
      * @return
      */
-    public boolean createMasterLoadAs(String masterNodeName, String namespace, String chainName, String memoryRequest, String cpuRequest, String memoryLimit, String cpuLimit) {
+    public boolean createMasterLoadAs(String masterNodeName, String namespace, String chainName, String memoryRequest, String cpuRequest, String memoryLimit, String cpuLimit, String statefulsetTemplate, String headlessTemplate, String nodeportTemplate) {
         if (masterNodeName == null || masterNodeName.isEmpty()) {
             return false;
         }
@@ -62,6 +64,15 @@ public class MasterNodeCreator {
             return false;
         }
         if (cpuLimit == null || cpuLimit.isEmpty()) {
+            return false;
+        }
+        if (statefulsetTemplate == null || statefulsetTemplate.isEmpty()) {
+            return false;
+        }
+        if (headlessTemplate == null || headlessTemplate.isEmpty()) {
+            return false;
+        }
+        if (nodeportTemplate == null || nodeportTemplate.isEmpty()) {
             return false;
         }
         //fill the user input
@@ -85,27 +96,27 @@ public class MasterNodeCreator {
         }
 
         //parse statefulset resource
-        String statefulset = FileReaderUtil.getInstance().readFileByLines("D:\\netbeans11-workspace\\multichain-docker-kubernetes\\k8s\\template\\k8s-multichain-statefulset-template.yaml");
-        if (statefulset == null || statefulset.isEmpty()) {
+        String statefulsetYAML = FileReaderUtil.getInstance().readFileByLines(statefulsetTemplate);
+        if (statefulsetYAML == null || statefulsetYAML.isEmpty()) {
             return false;
         }
-        String headless = FileReaderUtil.getInstance().readFileByLines("D:\\netbeans11-workspace\\multichain-docker-kubernetes\\k8s\\template\\k8s-multichain-headless-template.yaml");
-        if (headless == null || headless.isEmpty()) {
+        String headlessYAML = FileReaderUtil.getInstance().readFileByLines(headlessTemplate);
+        if (headlessYAML == null || headlessYAML.isEmpty()) {
             return false;
         }
 
-        String nodeport = FileReaderUtil.getInstance().readFileByLines("D:\\netbeans11-workspace\\multichain-docker-kubernetes\\k8s\\template\\k8s-multichain-nodeport-template.yaml");
-        if (nodeport == null || nodeport.isEmpty()) {
+        String nodeportYAML = FileReaderUtil.getInstance().readFileByLines(nodeportTemplate);
+        if (nodeportYAML == null || nodeportYAML.isEmpty()) {
             return false;
         }
 
         StringSubstitutor sub = new StringSubstitutor(PlaceHolderUtil.getInstance().getVlauesMap());
-        statefulset = sub.replace(statefulset);
+        statefulsetYAML = sub.replace(statefulsetYAML);
         //Deployment and StatefulSet is defined in apps/v1, so you should use AppsV1Api instead of CoreV1API
         AppsV1Api appv1 = new AppsV1Api();
         V1StatefulSet statefulSet;
         try {
-            statefulSet = Yaml.loadAs(statefulset, V1StatefulSet.class);
+            statefulSet = Yaml.loadAs(statefulsetYAML, V1StatefulSet.class);
             appv1.createNamespacedStatefulSet(statefulSet.getMetadata().getNamespace(), statefulSet, null, null, null);
         } catch (ApiException ex) {
             ex.printStackTrace();
@@ -118,9 +129,9 @@ public class MasterNodeCreator {
 
         V1Service headlessSvc;
         sub = new StringSubstitutor(PlaceHolderUtil.getInstance().getVlauesMap());
-        headless = sub.replace(headless);
+        headlessYAML = sub.replace(headlessYAML);
         try {
-            headlessSvc = Yaml.loadAs(headless, V1Service.class);
+            headlessSvc = Yaml.loadAs(headlessYAML, V1Service.class);
             corev1.createNamespacedService(headlessSvc.getMetadata().getNamespace(), headlessSvc, null, null, null);
         } catch (ApiException ex) {
             ex.printStackTrace();
@@ -130,9 +141,9 @@ public class MasterNodeCreator {
 
         V1Service nodeportSvc;
         sub = new StringSubstitutor(PlaceHolderUtil.getInstance().getVlauesMap());
-        nodeport = sub.replace(nodeport);
+        nodeportYAML = sub.replace(nodeportYAML);
         try {
-            nodeportSvc = Yaml.loadAs(nodeport, V1Service.class);
+            nodeportSvc = Yaml.loadAs(nodeportYAML, V1Service.class);
             corev1.createNamespacedService(nodeportSvc.getMetadata().getNamespace(), nodeportSvc, null, null, null);
         } catch (ApiException ex) {
             ex.printStackTrace();
@@ -155,7 +166,7 @@ public class MasterNodeCreator {
      * @param cpuLimit
      * @return
      */
-    public boolean createMasterLoadAll(String masterNodeName, String namespace, String chainName, String memoryRequest, String cpuRequest, String memoryLimit, String cpuLimit) {
+    public boolean createMasterLoadAll(String masterNodeName, String namespace, String chainName, String memoryRequest, String cpuRequest, String memoryLimit, String cpuLimit, String masterTemplateFile) {
         if (masterNodeName == null || masterNodeName.isEmpty()) {
             return false;
         }
@@ -175,6 +186,9 @@ public class MasterNodeCreator {
             return false;
         }
         if (cpuLimit == null || cpuLimit.isEmpty()) {
+            return false;
+        }
+        if (masterTemplateFile == null || masterTemplateFile.isEmpty()) {
             return false;
         }
         //fill the user input
@@ -197,13 +211,13 @@ public class MasterNodeCreator {
             }
         }
 
-        //parse master template
-        String masterTemplate = FileReaderUtil.getInstance().readFileByLines("D:\\netbeans11-workspace\\multichain-docker-kubernetes\\k8s\\template\\k8s-multichain-master-template.yaml");
-        if (masterTemplate == null || masterTemplate.isEmpty()) {
+        //parse master template file content and replace with user input
+        String masterTemplateYAML = FileReaderUtil.getInstance().readFileByLines(masterTemplateFile);
+        if (masterTemplateYAML == null || masterTemplateYAML.isEmpty()) {
             return false;
         }
         StringSubstitutor sub = new StringSubstitutor(PlaceHolderUtil.getInstance().getVlauesMap());
-        masterTemplate = sub.replace(masterTemplate);
+        masterTemplateYAML = sub.replace(masterTemplateYAML);
 
         //connect kubernetes and create resource
         V1StatefulSet statefulSet;
@@ -211,7 +225,7 @@ public class MasterNodeCreator {
         V1Service nodeportSvc;
         List<Object> objs = new ArrayList<>();
         try {
-            objs = Yaml.loadAll(masterTemplate);
+            objs = Yaml.loadAll(masterTemplateYAML);
         } catch (IOException ex) {
             ex.printStackTrace();
             return false;
@@ -256,7 +270,7 @@ public class MasterNodeCreator {
     }
 
     public static void main(String[] args) {
-        MasterNodeCreator.getInstance().createMasterLoadAll("testMasterNode", "testmaster-namespace", "testChain", "400", "350", "400", "350");
-//        MasterNodeCreator.getInstance().createMasterLoadAs("testMasterNode", "testmaster-namespace", "testChain", "400", "350", "400", "350");
+        MasterNodeCreator.getInstance().createMasterLoadAll("testMasterNode", "testmaster-namespace", "testChain", "400", "350", "400", "350", "");
+//        MasterNodeCreator.getInstance().createMasterLoadAs("testMasterNode", "testmaster-namespace", "testChain", "400", "350", "400", "350", "" , "" ,"");
     }
 }

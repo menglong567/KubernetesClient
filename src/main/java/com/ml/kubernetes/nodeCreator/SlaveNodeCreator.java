@@ -11,13 +11,14 @@ import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.openapi.models.V1Service;
 import io.kubernetes.client.openapi.models.V1StatefulSet;
 import io.kubernetes.client.util.Yaml;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.commons.text.StringSubstitutor;
 
 /**
- *
  * @author Liudan_Luo
  */
 public class SlaveNodeCreator {
@@ -31,12 +32,11 @@ public class SlaveNodeCreator {
     }
 
     /**
-     *
-     * @param slaveNodeName
-     * @param slaveNodeNamespace
-     * @param chainName
-     * @param masterNodeName
-     * @param masterNamespace
+     * @param slaveNodeName Name for slave node
+     * @param slaveNodeNamespace Namespace for slave node
+     * @param chainName Chain this slave node belongs to
+     * @param masterNodeName Master node this slave node to contact to pull configuration
+     * @param masterNamespace Namespace the master node belongs to
      * @param memoryRequest
      * @param cpuRequest
      * @param memoryLimit
@@ -45,7 +45,7 @@ public class SlaveNodeCreator {
      * @param rpcPort
      * @return
      */
-    public boolean createSlaveLoadAll(String slaveNodeName, String slaveNodeNamespace, String chainName, String masterNodeName, String masterNamespace, String memoryRequest, String cpuRequest, String memoryLimit, String cpuLimit, String networkPort, String rpcPort) {
+    public boolean createSlaveLoadAll(String slaveNodeName, String slaveNodeNamespace, String chainName, String masterNodeName, String masterNamespace, String memoryRequest, String cpuRequest, String memoryLimit, String cpuLimit, String networkPort, String rpcPort, String slaveTemplateFile) {
         if (slaveNodeName == null || slaveNodeName.isEmpty()) {
             return false;
         }
@@ -61,7 +61,6 @@ public class SlaveNodeCreator {
         if (masterNamespace == null || masterNamespace.isEmpty()) {
             return false;
         }
-
         if (memoryRequest == null || memoryRequest.isEmpty()) {
             return false;
         }
@@ -78,6 +77,9 @@ public class SlaveNodeCreator {
             return false;
         }
         if (rpcPort == null || rpcPort.isEmpty()) {
+            return false;
+        }
+        if (slaveTemplateFile == null || slaveTemplateFile.isEmpty()) {
             return false;
         }
 
@@ -105,21 +107,21 @@ public class SlaveNodeCreator {
             }
         }
 
-        //parse slave template
-        String slaveTemplate = FileReaderUtil.getInstance().readFileByLines("D:\\netbeans11-workspace\\multichain-docker-kubernetes\\k8s\\template\\k8s-multichain-slave-template.yaml");
-        if (slaveTemplate == null || slaveTemplate.isEmpty()) {
+        //parse slave template file content and replace with user input
+        String slaveTemplateTAML = FileReaderUtil.getInstance().readFileByLines(slaveTemplateFile);
+        if (slaveTemplateTAML == null || slaveTemplateTAML.isEmpty()) {
             return false;
         }
         StringSubstitutor sub = new StringSubstitutor(PlaceHolderUtil.getInstance().getVlauesMap());
-        slaveTemplate = sub.replace(slaveTemplate);
+        slaveTemplateTAML = sub.replace(slaveTemplateTAML);
 
         //connect kubernetes and create resource
         V1StatefulSet statefulSet;
         V1Service headlessSvc;
         V1Service nodeportSvc;
-        List<Object> objs = new ArrayList<>();
+        List<Object> objs;
         try {
-            objs = Yaml.loadAll(slaveTemplate);
+            objs = Yaml.loadAll(slaveTemplateTAML);
         } catch (IOException ex) {
             ex.printStackTrace();
             return false;
@@ -164,7 +166,7 @@ public class SlaveNodeCreator {
     }
 
     public static void main(String[] args) {
-       // SlaveNodeCreator.getInstance().createSlaveLoadAll("CITI-slave-1", "CITI-ns", "testChain", "testMasterNode", "testmaster-namespace", "400", "350", "400", "350", "31002", "31003");
-        SlaveNodeCreator.getInstance().createSlaveLoadAll("UBS-slave-1", "UBS-ns", "testChain", "testMasterNode", "testmaster-namespace", "400", "350", "400", "350", "31004", "31005");
+        // SlaveNodeCreator.getInstance().createSlaveLoadAll("CITI-slave-1", "CITI-ns", "testChain", "testMasterNode", "testmaster-namespace", "400", "350", "400", "350", "31002", "31003","");
+        SlaveNodeCreator.getInstance().createSlaveLoadAll("UBS-slave-1", "UBS-ns", "testChain", "testMasterNode", "testmaster-namespace", "400", "350", "400", "350", "31004", "31005", "");
     }
 }
