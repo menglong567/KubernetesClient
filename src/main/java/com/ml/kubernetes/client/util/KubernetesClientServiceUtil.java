@@ -1,11 +1,12 @@
-package com.ml.kubernetes.util;
+package com.ml.kubernetes.client.util;
 
-import com.ml.kubernetes.model.V1ServiceCreateResult;
+import com.ml.kubernetes.client.model.V1ServiceCreateResult;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.openapi.models.V1DeleteOptions;
 import io.kubernetes.client.openapi.models.V1Service;
 import io.kubernetes.client.openapi.models.V1Status;
+import org.slf4j.LoggerFactory;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,6 +16,7 @@ import java.util.logging.Logger;
  */
 public class KubernetesClientServiceUtil {
     private static final KubernetesClientServiceUtil instance = new KubernetesClientServiceUtil();
+    private static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(KubernetesClientServiceUtil.class);
 
     private KubernetesClientServiceUtil() {
     }
@@ -35,8 +37,8 @@ public class KubernetesClientServiceUtil {
         try {
             srv = api.createNamespacedService("default", service, null, null, null);
         } catch (ApiException ex) {
-            Logger.getLogger(KubernetesClientServiceUtil.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println(ex.getResponseBody());//this will help a lot when you fail
+            System.out.println(ex.getResponseBody());
+            LOGGER.error(ex.getResponseBody());
             result.setResult(false);
             result.setSrv(null);
         }
@@ -57,7 +59,8 @@ public class KubernetesClientServiceUtil {
             deleteResult = api.deleteNamespacedService(name, namespace, null, null, null, null, null, new V1DeleteOptions());
         } catch (ApiException ex) {
             Logger.getLogger(KubernetesClientServiceUtil.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println(ex.getResponseBody());//this will help a lot when you fail
+            LOGGER.error(ex.getResponseBody());
+            System.out.println(ex.getResponseBody());
         }
         return deleteResult;
     }

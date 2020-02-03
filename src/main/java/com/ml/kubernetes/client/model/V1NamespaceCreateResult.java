@@ -1,4 +1,4 @@
-package com.ml.kubernetes.model;
+package com.ml.kubernetes.client.model;
 
 import io.kubernetes.client.openapi.models.V1Namespace;
 
@@ -24,5 +24,4 @@ public class V1NamespaceCreateResult {
     public void setResult(boolean result) {
         this.result = result;
     }
-
 }

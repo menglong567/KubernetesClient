@@ -1,6 +1,6 @@
-package com.ml.kubernetes.example;
+package com.ml.kubernetes.client.example;
 
-import com.ml.kubernetes.util.KubernetesClientNamespaceUtil;
+import com.ml.kubernetes.client.util.KubernetesClientNamespaceUtil;
 
 /**
  * @author Liudan_Luo

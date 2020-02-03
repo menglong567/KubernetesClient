@@ -1,4 +1,4 @@
-package com.ml.kubernetes.model;
+package com.ml.kubernetes.client.model;
 
 import io.kubernetes.client.openapi.models.V1Deployment;
 

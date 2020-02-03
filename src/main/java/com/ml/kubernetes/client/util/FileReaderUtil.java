@@ -1,4 +1,4 @@
-package com.ml.kubernetes.util;
+package com.ml.kubernetes.client.util;
 
 import java.io.BufferedReader;
 import java.io.File;

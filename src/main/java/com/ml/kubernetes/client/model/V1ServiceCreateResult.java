@@ -1,4 +1,4 @@
-package com.ml.kubernetes.model;
+package com.ml.kubernetes.client.model;
 
 import io.kubernetes.client.openapi.models.V1Service;
 
@@ -6,6 +6,9 @@ import io.kubernetes.client.openapi.models.V1Service;
  * @author Liudan_Luo
  */
 public class V1ServiceCreateResult {
+    private V1Service srv;
+    private boolean result;
+
     public V1Service getSrv() {
         return srv;
     }
@@ -21,7 +24,4 @@ public class V1ServiceCreateResult {
     public void setResult(boolean result) {
         this.result = result;
     }
-
-    private V1Service srv;
-    private boolean result;
 }

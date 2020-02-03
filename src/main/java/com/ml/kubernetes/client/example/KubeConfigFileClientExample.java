@@ -1,4 +1,4 @@
-package com.ml.kubernetes.example;
+package com.ml.kubernetes.client.example;
 
 import com.ml.kubernetes.client.KubernetesClientApiClient;
 import io.kubernetes.client.openapi.ApiException;
@@ -12,6 +12,8 @@ import java.util.logging.Logger;
 /**
  * A simple example of how to use the Java API from an application outside a
  * kubernetes cluster
+ *
+ * @author luoliudan
  */
 public class KubeConfigFileClientExample {
     public static void main(String[] args) {

@@ -1,8 +1,8 @@
-package com.ml.kubernetes.example;
+package com.ml.kubernetes.client.example;
 
 import com.ml.kubernetes.client.KubernetesClientApiClient;
-import com.ml.kubernetes.model.V1ServiceCreateResult;
-import com.ml.kubernetes.util.KubernetesClientServiceUtil;
+import com.ml.kubernetes.client.model.V1ServiceCreateResult;
+import com.ml.kubernetes.client.util.KubernetesClientServiceUtil;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.openapi.models.V1Service;
 import io.kubernetes.client.openapi.models.V1Status;

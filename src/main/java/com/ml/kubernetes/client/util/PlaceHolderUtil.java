@@ -1,9 +1,7 @@
-package com.ml.kubernetes.util;
+package com.ml.kubernetes.client.util;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import org.apache.commons.text.StringSubstitutor;
 
 /**
  * @author Liudan_Luo

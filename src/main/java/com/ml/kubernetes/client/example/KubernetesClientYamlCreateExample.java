@@ -1,4 +1,4 @@
-package com.ml.kubernetes.example;
+package com.ml.kubernetes.client.example;
 
 import io.kubernetes.client.custom.IntOrString;
 import io.kubernetes.client.openapi.ApiException;
