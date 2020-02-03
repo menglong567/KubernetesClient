@@ -36,7 +36,7 @@ public class MultichainNodeCreatorController {
                                        @RequestParam(value = "cpuLimit", required = true) String cpuLimit,
                                        @RequestParam(value = "nodeportnetworkPort", required = true) String nodeportnetworkPort,
                                        @RequestParam(value = "nodeportrpcPort", required = true) String nodeportrpcPort) {
-        MultichainNodeCreationResult result = MasterNodeCreator.getInstance().createMasterLoadAll(masterNodeName, namespace, chainName, memoryRequest, cpuRequest, memoryLimit, cpuLimit, nodeportnetworkPort, nodeportrpcPort, "D:\\ideaIU-2019.2.win-workspace\\multichain-docker-kubernetes\\k8s\\template\\k8s-multichain-master-template.yaml");
+        MultichainNodeCreationResult result = MasterNodeCreator.getInstance().createMasterLoadAll(masterNodeName, namespace, chainName, memoryRequest, cpuRequest, memoryLimit, cpuLimit, nodeportnetworkPort, nodeportrpcPort, "D:\\ideaIU-2019.2.win-workspace\\multichain-docker-kubernetes\\k8s\\multichain\\template\\k8s-multichain-master-template.yaml");
         return GSonUtil.getInstance().object2Json(result);
     }
 
@@ -47,7 +47,7 @@ public class MultichainNodeCreatorController {
     @RequestMapping(value = "/multichain/master/create/json", method = RequestMethod.POST, consumes = "application/json")
     @ResponseBody
     public String createMasterNodeJson(@RequestBody MasterNodeParametersObj message) {
-        MultichainNodeCreationResult result = MasterNodeCreator.getInstance().createMasterLoadAll(message.getMasterNodeName(), message.getNamespace(), message.getChainName(), message.getMemoryRequest(), message.getCpuRequest(), message.getMemoryLimit(), message.getCpuLimit(), message.getNodeportnetworkPort(), message.getNodeportrpcPort(), "D:\\ideaIU-2019.2.win-workspace\\multichain-docker-kubernetes\\k8s\\template\\k8s-multichain-master-template.yaml");
+        MultichainNodeCreationResult result = MasterNodeCreator.getInstance().createMasterLoadAll(message.getMasterNodeName(), message.getNamespace(), message.getChainName(), message.getMemoryRequest(), message.getCpuRequest(), message.getMemoryLimit(), message.getCpuLimit(), message.getNodeportnetworkPort(), message.getNodeportrpcPort(), "D:\\ideaIU-2019.2.win-workspace\\multichain-docker-kubernetes\\k8s\\multichain\\template\\k8s-multichain-master-template.yaml");
         return GSonUtil.getInstance().object2Json(result);
     }
 
@@ -79,7 +79,7 @@ public class MultichainNodeCreatorController {
                                       @RequestParam(value = "cpuLimit", required = true) String cpuLimit,
                                       @RequestParam(value = "nodeportnetworkPort", required = true) String nodeportnetworkPort,
                                       @RequestParam(value = "nodeportrpcPort", required = true) String nodeportrpcPort) {
-        MultichainNodeCreationResult result = SlaveNodeCreator.getInstance().createSlaveLoadAll(slaveNodeName, slaveNodeNamespace, chainName, masterNodeName, masterNamespace, memoryRequest, cpuRequest, memoryLimit, cpuLimit, nodeportnetworkPort, nodeportrpcPort, "D:\\ideaIU-2019.2.win-workspace\\multichain-docker-kubernetes\\k8s\\template\\k8s-multichain-slave-template.yaml");
+        MultichainNodeCreationResult result = SlaveNodeCreator.getInstance().createSlaveLoadAll(slaveNodeName, slaveNodeNamespace, chainName, masterNodeName, masterNamespace, memoryRequest, cpuRequest, memoryLimit, cpuLimit, nodeportnetworkPort, nodeportrpcPort, "D:\\ideaIU-2019.2.win-workspace\\multichain-docker-kubernetes\\k8s\\multichain\\template\\k8s-multichain-slave-template.yaml");
         return GSonUtil.getInstance().object2Json(result);
     }
 
@@ -90,7 +90,7 @@ public class MultichainNodeCreatorController {
     @RequestMapping(value = "/multichain/slave/create/json", method = RequestMethod.POST, consumes = "application/json")
     @ResponseBody
     public String createSlaveNodeJson(@RequestBody SlaveNodeParametersObj message) {
-        MultichainNodeCreationResult result = SlaveNodeCreator.getInstance().createSlaveLoadAll(message.getSlaveNodeName(), message.getSlaveNodeNamespace(), message.getChainName(), message.getMasterNodeName(), message.getMasterNamespace(), message.getMemoryRequest(), message.getCpuRequest(), message.getMemoryLimit(), message.getCpuLimit(), message.getNodeportnetworkPort(), message.getNodeportrpcPort(), "D:\\ideaIU-2019.2.win-workspace\\multichain-docker-kubernetes\\k8s\\template\\k8s-multichain-slave-template.yaml");
+        MultichainNodeCreationResult result = SlaveNodeCreator.getInstance().createSlaveLoadAll(message.getSlaveNodeName(), message.getSlaveNodeNamespace(), message.getChainName(), message.getMasterNodeName(), message.getMasterNamespace(), message.getMemoryRequest(), message.getCpuRequest(), message.getMemoryLimit(), message.getCpuLimit(), message.getNodeportnetworkPort(), message.getNodeportrpcPort(), "D:\\ideaIU-2019.2.win-workspace\\multichain-docker-kubernetes\\k8s\\multichain\\template\\k8s-multichain-slave-template.yaml");
         return GSonUtil.getInstance().object2Json(result);
     }
 }
