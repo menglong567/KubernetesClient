@@ -55,7 +55,7 @@ public class GSonUtil {
         json = GSonUtil.getInstance().object2Json(sobj);
         System.out.println(json);
 
-        obj.setChainName("demoChain");
+        sobj.setChainName("demoChain");
         sobj.setCpuLimit("400");
         sobj.setCpuRequest("400");
         sobj.setMemoryRequest("400");
