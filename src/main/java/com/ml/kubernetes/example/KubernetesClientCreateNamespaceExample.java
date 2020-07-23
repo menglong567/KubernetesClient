@@ -1,12 +1,12 @@
 package com.ml.kubernetes.example;
 
-import com.ml.kubernetes.util.KubernetesClientNamespaceUtil;
+import com.ml.kubernetes.util.MultichainKubernetesClientNamespaceUtil;
 
 /**
  * @author Liudan_Luo
  */
 public class KubernetesClientCreateNamespaceExample {
     public static void main(String[] args) {
-        KubernetesClientNamespaceUtil.getInstance().createNamespace("test");
+        MultichainKubernetesClientNamespaceUtil.getInstance().createNamespace("test");
     }
 }

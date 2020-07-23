@@ -1,6 +1,6 @@
 package com.ml.kubernetes.example;
 
-import com.ml.kubernetes.KubernetesClientApiClient;
+import com.ml.kubernetes.ApiClient.MultichainKubernetesClientApiClient;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.AppsV1Api;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
@@ -13,7 +13,7 @@ import io.kubernetes.client.openapi.models.V1ObjectMeta;
  */
 public class KubernetesClientCreateDeploymentExample {
     public Object createDeployment(String name) {
-        KubernetesClientApiClient.getInstance();
+        MultichainKubernetesClientApiClient.getInstance();
         CoreV1Api api = new CoreV1Api();
         AppsV1Api appsV1Api = new AppsV1Api();
         V1Deployment deployment = new V1Deployment();

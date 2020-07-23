@@ -1,11 +1,11 @@
 package com.ml.kubernetes.client.multichain.nodeCreator;
 
-import com.ml.kubernetes.KubernetesClientApiClient;
+import com.ml.kubernetes.ApiClient.MultichainKubernetesClientApiClient;
 import com.ml.kubernetes.result.V1NamespaceCreateResult;
 import com.ml.kubernetes.client.multichain.model.MultichainNodeCreationResult;
 import com.ml.kubernetes.util.CommonUtil;
 import com.ml.kubernetes.util.FileReaderUtil;
-import com.ml.kubernetes.util.KubernetesClientNamespaceUtil;
+import com.ml.kubernetes.util.MultichainKubernetesClientNamespaceUtil;
 import com.ml.kubernetes.util.PlaceHolderUtil;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.AppsV1Api;
@@ -150,9 +150,9 @@ public class MasterNodeCreator {
         PlaceHolderUtil.getInstance().addValues("nodeportnetworkPort", nodeportnetworkPort);
         PlaceHolderUtil.getInstance().addValues("nodeportrpcPort", nodeportrpcPort);
         //connect kubernetes and check namespace resource
-        KubernetesClientApiClient.getInstance();
-        if (!KubernetesClientNamespaceUtil.getInstance().queryNamespace(namespace)) {
-            V1NamespaceCreateResult result = KubernetesClientNamespaceUtil.getInstance().createNamespace(namespace);
+        MultichainKubernetesClientApiClient.getInstance();
+        if (!MultichainKubernetesClientNamespaceUtil.getInstance().queryNamespace(namespace)) {
+            V1NamespaceCreateResult result = MultichainKubernetesClientNamespaceUtil.getInstance().createNamespace(namespace);
             if (!result.isResult()) {
                 LOGGER.error("Namespace " + namespace + " creation failed!");//this will help a lot when you fail
                 return new MultichainNodeCreationResult("Namespace " + namespace + " creation failed!", false);
@@ -325,9 +325,9 @@ public class MasterNodeCreator {
         PlaceHolderUtil.getInstance().addValues("nodeportrpcPort", nodeportrpcPort);
 
         //check namespace , if not exist ,create it
-        KubernetesClientApiClient.getInstance();
-        if (!KubernetesClientNamespaceUtil.getInstance().queryNamespace(namespace)) {
-            V1NamespaceCreateResult result = KubernetesClientNamespaceUtil.getInstance().createNamespace(namespace);
+        MultichainKubernetesClientApiClient.getInstance();
+        if (!MultichainKubernetesClientNamespaceUtil.getInstance().queryNamespace(namespace)) {
+            V1NamespaceCreateResult result = MultichainKubernetesClientNamespaceUtil.getInstance().createNamespace(namespace);
             if (!result.isResult()) {
                 LOGGER.error("Namespace " + namespace + " creation failed!");
                 return new MultichainNodeCreationResult("Namespace " + namespace + " creation failed!", false);

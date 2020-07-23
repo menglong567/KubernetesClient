@@ -1,6 +1,6 @@
 package com.ml.kubernetes.example;
 
-import com.ml.kubernetes.KubernetesClientApiClient;
+import com.ml.kubernetes.ApiClient.MultichainKubernetesClientApiClient;
 import com.ml.kubernetes.result.V1ServiceCreateResult;
 import com.ml.kubernetes.util.KubernetesClientServiceUtil;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  */
 public class KubernetesClientYamlLoadDeployServiceExample {
     public static void main(String[] args) {
-        KubernetesClientApiClient.getInstance();
+        MultichainKubernetesClientApiClient.getInstance();
         //  See issue #474. Not needed at most cases, but it is needed if you are using war packging or running this on JUnit.
         Yaml.addModelMap("v1", "Service", V1Service.class);
         File file = new File("src/main/resources/test-svc.yaml");

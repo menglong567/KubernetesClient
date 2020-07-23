@@ -1,11 +1,11 @@
 package com.ml.kubernetes.client.multichain.nodeCreator;
 
-import com.ml.kubernetes.KubernetesClientApiClient;
+import com.ml.kubernetes.ApiClient.MultichainKubernetesClientApiClient;
 import com.ml.kubernetes.result.V1NamespaceCreateResult;
 import com.ml.kubernetes.client.multichain.model.MultichainNodeCreationResult;
 import com.ml.kubernetes.util.CommonUtil;
 import com.ml.kubernetes.util.FileReaderUtil;
-import com.ml.kubernetes.util.KubernetesClientNamespaceUtil;
+import com.ml.kubernetes.util.MultichainKubernetesClientNamespaceUtil;
 import com.ml.kubernetes.util.PlaceHolderUtil;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.AppsV1Api;
@@ -155,9 +155,9 @@ public class SlaveNodeCreator {
         PlaceHolderUtil.getInstance().addValues("nodeportrpcPort", nodeportrpcPort);
 
         //check namespace , if not exist ,create it
-        KubernetesClientApiClient.getInstance();
-        if (!KubernetesClientNamespaceUtil.getInstance().queryNamespace(slaveNodeNamespace)) {
-            V1NamespaceCreateResult result = KubernetesClientNamespaceUtil.getInstance().createNamespace(slaveNodeNamespace);
+        MultichainKubernetesClientApiClient.getInstance();
+        if (!MultichainKubernetesClientNamespaceUtil.getInstance().queryNamespace(slaveNodeNamespace)) {
+            V1NamespaceCreateResult result = MultichainKubernetesClientNamespaceUtil.getInstance().createNamespace(slaveNodeNamespace);
             if (!result.isResult()) {
                 LOGGER.error("Namespace " + slaveNodeNamespace + " creation failed!");
                 return new MultichainNodeCreationResult("Namespace " + slaveNodeNamespace + " creation failed!", false);
