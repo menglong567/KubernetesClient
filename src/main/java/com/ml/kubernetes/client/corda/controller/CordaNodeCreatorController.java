@@ -88,7 +88,7 @@ public class CordaNodeCreatorController {
                                              @RequestParam(value = "cpuRequest", required = true) String cpuRequest,
                                              @RequestParam(value = "memoryLimit", required = true) String memoryLimit,
                                              @RequestParam(value = "cpuLimit", required = true) String cpuLimit) {
-        CordaNodeCreationResult result = CordaNodeCreator.getInstance().createWebserverLoadAll(NodeNamespace, WebserverNodeport, memoryRequest, cpuRequest, memoryLimit, cpuLimit, cordaPartyWebserverv2Template);
+        CordaNodeCreationResult result = CordaNodeCreator.getInstance().createCordaClientServerLoadAll(NodeNamespace, WebserverNodeport, memoryRequest, cpuRequest, memoryLimit, cpuLimit, cordaPartyWebserverv2Template);
         return GSonUtil.getInstance().object2Json(result);
     }
 }

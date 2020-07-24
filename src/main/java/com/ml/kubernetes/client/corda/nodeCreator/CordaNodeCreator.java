@@ -637,7 +637,7 @@ public class CordaNodeCreator {
      * @param partyWebserverv2Template
      * @return
      */
-    public CordaNodeCreationResult createWebserverLoadAll(String NodeNamespace, String WebserverNodeport, String memoryRequest, String cpuRequest, String memoryLimit, String cpuLimit, String partyWebserverv2Template) {
+    public CordaNodeCreationResult createCordaClientServerLoadAll(String NodeNamespace, String WebserverNodeport, String memoryRequest, String cpuRequest, String memoryLimit, String cpuLimit, String partyWebserverv2Template) {
         if (NodeNamespace == null || NodeNamespace.isEmpty()) {
             LOGGER.error("networkMapServicePort is null");
             return new CordaNodeCreationResult("networkMapServicePort is null", false);
@@ -794,7 +794,7 @@ public class CordaNodeCreator {
 //        LOGGER.info(GSonUtil.getInstance().object2Json(result));
 
         //webserver-v2
-        CordaNodeCreationResult result = CordaNodeCreator.getInstance().createPartyWebserverV2LoadAll("corda-dynamic-zone-ns-test", "31008", "400", "400", "400", "400", "D:\\ideaIU-2019.2.win-workspace\\corda-docker-kubernetes\\docker-corda\\dynamic-compatibility-zone\\kubernetes-client-k8s-dynamic-compatibility-zone-template\\party-webserver-v2-k8s-template.yml");
+        CordaNodeCreationResult result = CordaNodeCreator.getInstance().createCordaClientServerLoadAll("corda-dynamic-zone-ns-test", "31008", "400", "400", "400", "400", "D:\\ideaIU-2019.2.win-workspace\\corda-docker-kubernetes\\docker-corda\\dynamic-compatibility-zone\\kubernetes-client-k8s-dynamic-compatibility-zone-template\\party-webserver-v2-k8s-template.yml");
         LOGGER.info(GSonUtil.getInstance().object2Json(result));
     }
 }
