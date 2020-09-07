@@ -21,6 +21,8 @@ public class CordaNodeCreatorController {
     private String cordaPartyWebserverTemplate;
     @Value("${corda.network.party.webserverv2.node.template.file}")
     private String cordaPartyWebserverv2Template;
+    @Value("${corda.network.node.postgres.template.file}")
+    private String cordaNodePostgresTemplate;
 
     @RequestMapping(value = "/corda/networkmapservice/create/form", method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded")
     @ResponseBody
@@ -65,6 +67,19 @@ public class CordaNodeCreatorController {
         return GSonUtil.getInstance().object2Json(result);
     }
 
+    @RequestMapping(value = "/corda/postgres/create/form", method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded")
+    @ResponseBody
+    public String createPartyNodePostgresForm(
+            @RequestParam(value = "NodeName", required = true) String NodeName,
+            @RequestParam(value = "NodeNamespace", required = true) String NodeNamespace,
+            @RequestParam(value = "memoryRequest", required = true) String memoryRequest,
+            @RequestParam(value = "cpuRequest", required = true) String cpuRequest,
+            @RequestParam(value = "memoryLimit", required = true) String memoryLimit,
+            @RequestParam(value = "cpuLimit", required = true) String cpuLimit) {
+        CordaNodeCreationResult result = CordaNodeCreator.getInstance().createNodePostgresLoadAll(NodeName, NodeNamespace, memoryRequest, cpuRequest, memoryLimit, cpuLimit, cordaNodePostgresTemplate);
+        return GSonUtil.getInstance().object2Json(result);
+    }
+
     @RequestMapping(value = "/corda/partyWebserver/create/form", method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded")
     @ResponseBody
     public String createPartyWebserverForm(@RequestParam(value = "NodeName", required = true) String NodeName,
@@ -82,12 +97,12 @@ public class CordaNodeCreatorController {
     @RequestMapping(value = "/corda/webserver/create/form", method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded")
     @ResponseBody
     public String createWebserverForm(@RequestParam(value = "NodeName", required = true) String NodeName,
-                                             @RequestParam(value = "NodeNamespace", required = true) String NodeNamespace,
-                                             @RequestParam(value = "WebserverNodeport", required = true) String WebserverNodeport,
-                                             @RequestParam(value = "memoryRequest", required = true) String memoryRequest,
-                                             @RequestParam(value = "cpuRequest", required = true) String cpuRequest,
-                                             @RequestParam(value = "memoryLimit", required = true) String memoryLimit,
-                                             @RequestParam(value = "cpuLimit", required = true) String cpuLimit) {
+                                      @RequestParam(value = "NodeNamespace", required = true) String NodeNamespace,
+                                      @RequestParam(value = "WebserverNodeport", required = true) String WebserverNodeport,
+                                      @RequestParam(value = "memoryRequest", required = true) String memoryRequest,
+                                      @RequestParam(value = "cpuRequest", required = true) String cpuRequest,
+                                      @RequestParam(value = "memoryLimit", required = true) String memoryLimit,
+                                      @RequestParam(value = "cpuLimit", required = true) String cpuLimit) {
         CordaNodeCreationResult result = CordaNodeCreator.getInstance().createCordaClientServerLoadAll(NodeNamespace, WebserverNodeport, memoryRequest, cpuRequest, memoryLimit, cpuLimit, cordaPartyWebserverv2Template);
         return GSonUtil.getInstance().object2Json(result);
     }

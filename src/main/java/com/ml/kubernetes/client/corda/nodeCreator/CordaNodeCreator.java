@@ -477,6 +477,130 @@ public class CordaNodeCreator {
      *
      * @param NodeName
      * @param NodeNamespace
+     * @param memoryRequest
+     * @param cpuRequest
+     * @param memoryLimit
+     * @param cpuLimit
+     * @param postgresTemplate
+     * @return
+     */
+    public CordaNodeCreationResult createNodePostgresLoadAll(String NodeName, String NodeNamespace, String memoryRequest, String cpuRequest, String memoryLimit, String cpuLimit, String postgresTemplate) {
+        if (NodeName == null || NodeName.isEmpty()) {
+            LOGGER.error("NodeName is null");
+            return new CordaNodeCreationResult("NodeName is null", false);
+        }
+        if (NodeNamespace == null || NodeNamespace.isEmpty()) {
+            LOGGER.error("NodeNamespace is null");
+            return new CordaNodeCreationResult("NodeNamespace is null", false);
+        }
+        if (memoryRequest == null || memoryRequest.isEmpty()) {
+            LOGGER.error("memoryRequest is null");
+            return new CordaNodeCreationResult("memoryRequest is null", false);
+        }
+        if (!CommonUtil.getInstance().isInteger(memoryRequest)) {
+            LOGGER.error(memoryRequest + " is not a valid number");
+            return new CordaNodeCreationResult(memoryRequest + " is not a valid number", false);
+        }
+        if (cpuRequest == null || cpuRequest.isEmpty()) {
+            LOGGER.error("cpuRequest is null");
+            return new CordaNodeCreationResult("cpuRequest is null", false);
+        }
+        if (!CommonUtil.getInstance().isInteger(cpuRequest)) {
+            LOGGER.error(cpuRequest + " is not a valid number");
+            return new CordaNodeCreationResult(cpuRequest + " is not a valid number", false);
+        }
+        if (memoryLimit == null || memoryLimit.isEmpty()) {
+            LOGGER.error("memoryLimit is null");
+            return new CordaNodeCreationResult("memoryLimit is null", false);
+        }
+        if (!CommonUtil.getInstance().isInteger(memoryLimit)) {
+            LOGGER.error(memoryLimit + " is not a valid number");
+            return new CordaNodeCreationResult(memoryLimit + " is not a valid number", false);
+        }
+        if (cpuLimit == null || cpuLimit.isEmpty()) {
+            LOGGER.error("cpuLimit is null");
+            return new CordaNodeCreationResult("cpuLimit is null", false);
+        }
+        if (!CommonUtil.getInstance().isInteger(cpuLimit)) {
+            LOGGER.error(cpuLimit + " is not a valid number");
+            return new CordaNodeCreationResult(cpuLimit + " is not a valid number", false);
+        }
+        if (postgresTemplate == null || postgresTemplate.isEmpty()) {
+            LOGGER.error("postgresTemplate is null");
+            return new CordaNodeCreationResult("postgresTemplate is null", false);
+        }
+        //fill the user input
+        PlaceHolderUtil.getInstance().clearValues();
+        PlaceHolderUtil.getInstance().addValues("NodeName", NodeName.toLowerCase());//a DNS-1035 label must consist of lower case alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character (e.g. 'my-name',  or 'abc-123', regex used for validation is '[a-z]([-a-z0-9]*[a-z0-9])?')
+        PlaceHolderUtil.getInstance().addValues("NodeNamespace", NodeNamespace.toLowerCase());//a namespace is not allowed to have capital characters
+        PlaceHolderUtil.getInstance().addValues("memoryRequest", memoryRequest);
+        PlaceHolderUtil.getInstance().addValues("cpuRequest", cpuRequest);
+        PlaceHolderUtil.getInstance().addValues("memoryLimit", memoryLimit);
+        PlaceHolderUtil.getInstance().addValues("cpuLimit", cpuLimit);
+
+        //check namespace , if not exist ,create it
+        CordaKubernetesClientApiClient.getInstance();
+        if (!CordaKubernetesClientNamespaceUtil.getInstance().queryNamespace(NodeNamespace)) {
+            V1NamespaceCreateResult result = CordaKubernetesClientNamespaceUtil.getInstance().createNamespace(NodeNamespace);
+            if (!result.isResult()) {
+                LOGGER.error("Namespace " + NodeNamespace + " creation failed!");
+                return new CordaNodeCreationResult("Namespace:" + NodeNamespace + " creation failed!", false);
+            } else {
+                LOGGER.error("Namespace:" + NodeNamespace + " creation succeeded!");
+            }
+        } else {
+            LOGGER.info("Namespace:" + NodeNamespace + " already exists!");
+        }
+
+        //parse master template file content and replace with user input
+        String postgresTemplateYAML = FileReaderUtil.getInstance().readFileByLines(postgresTemplate);
+        if (postgresTemplateYAML == null || postgresTemplateYAML.isEmpty()) {
+            LOGGER.error("Generated postgresTemplateYAML is null!");
+            return new CordaNodeCreationResult("Generated postgresTemplateYAML is null", false);
+        }
+        StringSubstitutor sub = new StringSubstitutor(PlaceHolderUtil.getInstance().getVlauesMap());
+        postgresTemplateYAML = sub.replace(postgresTemplateYAML);
+
+        //connect kubernetes and create resource
+        V1StatefulSet statefulSet;
+        V1Service headlessSvc;
+        List<Object> objs = new ArrayList<>();
+        try {
+            objs = Yaml.loadAll(postgresTemplateYAML);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return new CordaNodeCreationResult(ex.getMessage(), false);
+        }
+        statefulSet = (V1StatefulSet) objs.get(0);//get statefulset
+        headlessSvc = (V1Service) objs.get(1);//get headless service
+
+        CoreV1Api corev1 = new CoreV1Api();
+        try {
+            corev1.createNamespacedService(headlessSvc.getMetadata().getNamespace(), headlessSvc, null, null, null);
+        } catch (ApiException ex) {
+            ex.printStackTrace();
+            LOGGER.error(ex.getResponseBody());//this will help a lot when you fail
+            return new CordaNodeCreationResult(ex.getResponseBody(), false);
+        }
+        LOGGER.info("Headless service:" + headlessSvc.getMetadata().getName() + " created successfully!");
+
+        //Deployment and StatefulSet is defined in apps/v1, so should use AppsV1Api instead of CoreV1API
+        AppsV1Api appv1 = new AppsV1Api();
+        try {
+            appv1.createNamespacedStatefulSet(statefulSet.getMetadata().getNamespace(), statefulSet, null, null, null);
+        } catch (ApiException ex) {
+            ex.printStackTrace();
+            LOGGER.error(ex.getResponseBody());//this will help a lot when you fail
+            return new CordaNodeCreationResult(ex.getResponseBody(), false);
+        }
+        LOGGER.info("StatefulSet:" + statefulSet.getMetadata().getName() + " created successfully!");
+        return new CordaNodeCreationResult("Postgres for " + "node: " + NodeName + " Creation successfully finished!", true);
+    }
+
+    /****
+     *
+     * @param NodeName
+     * @param NodeNamespace
      * @param WebserverNodeport
      * @param PartyRPCPort
      * @param memoryRequest
@@ -762,39 +886,87 @@ public class CordaNodeCreator {
         return new CordaNodeCreationResult("Webserver-v2: " + " Creation successfully finished!", true);
     }
 
+
     public static void main(String[] args) {
 //        CordaNodeCreationResult result = CordaNodeCreator.getInstance().createNetworkMapServiceLoadAll("network-map-service", "corda-dynamic-zone-ns-test", "31080", "400", "350", "400", "350", "D:\\ideaIU-2019.2.win-workspace\\corda-docker-kubernetes\\docker-corda\\dynamic-compatibility-zone\\kubernetes-client-k8s-dynamic-compatibility-zone-template\\network-map-service-template.yaml");
 //        LOGGER.info(GSonUtil.getInstance().object2Json(result));
 
-//        CordaNodeCreationResult result = CordaNodeCreator.getInstance().createNotaryLoadAll("http://network-map-service-0.network-map-service", "8080", "notary", "corda-dynamic-zone-ns-test", "O=Notary,L=London,C=GB", "400", "350", "400", "350", "D:\\ideaIU-2019.2.win-workspace\\corda-docker-kubernetes\\docker-corda\\dynamic-compatibility-zone\\kubernetes-client-k8s-dynamic-compatibility-zone-template\\notary-node-template.yaml");
+//        CordaNodeCreationResult result = CordaNodeCreator.getInstance().createNotaryLoadAll("http://network-map-service-0.network-map-service", "8080", "notary", "corda-dynamic-zone-ns-test", "O=Notary,L=London,C=GB", "512", "500", "512", "500", "D:\\ideaIU-2019.2.win-workspace\\corda-docker-kubernetes\\docker-corda\\dynamic-compatibility-zone\\kubernetes-client-k8s-dynamic-compatibility-zone-template\\notary-node-template.yaml");
 //        LOGGER.info(GSonUtil.getInstance().object2Json(result));
 
         //O=PartyA,L=London,C=GB
-//        CordaNodeCreationResult result = CordaNodeCreator.getInstance().createPartyLoadAll("http://network-map-service-0.network-map-service", "8080", "O=PartyA,L=London,C=GB", "partya", "corda-dynamic-zone-ns-test", "500", "400", "500", "400", "D:\\ideaIU-2019.2.win-workspace\\corda-docker-kubernetes\\docker-corda\\dynamic-compatibility-zone\\kubernetes-client-k8s-dynamic-compatibility-zone-template\\party-node-template.yaml");
+//        CordaNodeCreationResult result = CordaNodeCreator.getInstance().createPartyLoadAll("http://network-map-service-0.network-map-service", "8080", "O=PartyA, L=London, C=GB", "partya", "corda-dynamic-zone-ns-test", "500", "500", "500", "500", "D:\\ideaIU-2019.2.win-workspace\\corda-docker-kubernetes\\docker-corda\\dynamic-compatibility-zone\\kubernetes-client-k8s-dynamic-compatibility-zone-template\\party-node-template.yaml");
 //        LOGGER.info(GSonUtil.getInstance().object2Json(result));
 //
 //        //O=PartyB,L=New York,C=US
-//        CordaNodeCreationResult result = CordaNodeCreator.getInstance().createPartyLoadAll("http://network-map-service-0.network-map-service", "8080", "O=PartyB,L=New York,C=US", "partyb", "corda-dynamic-zone-ns-test", "500", "400", "500", "400", "D:\\ideaIU-2019.2.win-workspace\\corda-docker-kubernetes\\docker-corda\\dynamic-compatibility-zone\\kubernetes-client-k8s-dynamic-compatibility-zone-template\\party-node-template.yaml");
+//        CordaNodeCreationResult result = CordaNodeCreator.getInstance().createPartyLoadAll("http://network-map-service-0.network-map-service", "8080", "O=PartyB, L=New York, C=US", "partyb", "corda-dynamic-zone-ns-test", "512", "500", "512", "500", "D:\\ideaIU-2019.2.win-workspace\\corda-docker-kubernetes\\docker-corda\\dynamic-compatibility-zone\\kubernetes-client-k8s-dynamic-compatibility-zone-template\\party-node-template.yaml");
 //        LOGGER.info(GSonUtil.getInstance().object2Json(result));
 //
 //        //O=PartyC,L=Paris,C=FR
-//        CordaNodeCreationResult result =CordaNodeCreator.getInstance().createPartyLoadAll("http://network-map-service-0.network-map-service", "8080", "O=PartyC,L=Paris,C=FR", "partyc", "corda-dynamic-zone-ns-test", "500", "400", "500", "400", "D:\\ideaIU-2019.2.win-workspace\\corda-docker-kubernetes\\docker-corda\\dynamic-compatibility-zone\\kubernetes-client-k8s-dynamic-compatibility-zone-template\\party-node-template.yaml");
+//        CordaNodeCreationResult result =CordaNodeCreator.getInstance().createPartyLoadAll("http://network-map-service-0.network-map-service", "8080", "O=PartyC, L=Paris, C=FR", "partyc", "corda-dynamic-zone-ns-test", "512", "500", "512", "500", "D:\\ideaIU-2019.2.win-workspace\\corda-docker-kubernetes\\docker-corda\\dynamic-compatibility-zone\\kubernetes-client-k8s-dynamic-compatibility-zone-template\\party-node-template.yaml");
 //        LOGGER.info(GSonUtil.getInstance().object2Json(result));
 
-        //partya 10005 31005
+        //partya 10005 31005 webserver
 //        CordaNodeCreationResult result = CordaNodeCreator.getInstance().createPartyWebserverLoadAll("partya", "corda-dynamic-zone-ns-test","31005", "10005", "300", "300", "300", "300", "D:\\ideaIU-2019.2.win-workspace\\corda-docker-kubernetes\\docker-corda\\dynamic-compatibility-zone\\kubernetes-client-k8s-dynamic-compatibility-zone-template\\party-webserver-k8s-template.yml");
 //        LOGGER.info(GSonUtil.getInstance().object2Json(result));
 
-        //partyb 10009 31006
+        //partyb 10009 31006 webserver
 //        CordaNodeCreationResult result = CordaNodeCreator.getInstance().createPartyWebserverLoadAll("partyb", "corda-dynamic-zone-ns-test","31006", "10005", "300", "300", "300", "300", "D:\\ideaIU-2019.2.win-workspace\\corda-docker-kubernetes\\docker-corda\\dynamic-compatibility-zone\\kubernetes-client-k8s-dynamic-compatibility-zone-template\\party-webserver-k8s-template.yml");
 //        LOGGER.info(GSonUtil.getInstance().object2Json(result));
 //
-//        //partya 10013 31007
+//        //partya 10013 31007 webserver
 //        CordaNodeCreationResult result = CordaNodeCreator.getInstance().createPartyWebserverLoadAll("partyc", "corda-dynamic-zone-ns-test","31007", "10005", "300", "300", "300", "300", "D:\\ideaIU-2019.2.win-workspace\\corda-docker-kubernetes\\docker-corda\\dynamic-compatibility-zone\\kubernetes-client-k8s-dynamic-compatibility-zone-template\\party-webserver-k8s-template.yml");
 //        LOGGER.info(GSonUtil.getInstance().object2Json(result));
 
-        //webserver-v2
-        CordaNodeCreationResult result = CordaNodeCreator.getInstance().createCordaClientServerLoadAll("corda-dynamic-zone-ns-test", "31008", "400", "400", "400", "400", "D:\\ideaIU-2019.2.win-workspace\\corda-docker-kubernetes\\docker-corda\\dynamic-compatibility-zone\\kubernetes-client-k8s-dynamic-compatibility-zone-template\\party-webserver-v2-k8s-template.yml");
+        //corda-client
+//        CordaNodeCreationResult result = CordaNodeCreator.getInstance().createCordaClientServerLoadAll("corda-dynamic-zone-ns-test", "31008", "400", "400", "400", "400", "D:\\ideaIU-2019.2.win-workspace\\corda-docker-kubernetes\\docker-corda\\dynamic-compatibility-zone\\kubernetes-client-k8s-dynamic-compatibility-zone-template\\party-webserver-v2-k8s-template.yml");
+//        LOGGER.info(GSonUtil.getInstance().object2Json(result));
+
+
+        //O=PartyA,L=London,C=GB  with pvc template
+//        CordaNodeCreationResult result = CordaNodeCreator.getInstance().createPartyLoadAll("http://network-map-service-0.network-map-service", "8080", "O=PartyA, L=London, C=GB", "partya", "corda-dynamic-zone-ns-test", "500", "500", "500", "500", "D:\\ideaIU-2019.2.win-workspace\\corda-docker-kubernetes\\docker-corda\\dynamic-compatibility-zone\\kubernetes-client-k8s-dynamic-compatibility-zone-template\\LPV\\party-node-template-pvc-v2.yaml");
+//        LOGGER.info(GSonUtil.getInstance().object2Json(result));
+//
+//        //O=PartyB,L=New York,C=US with pvc tempalte
+//        CordaNodeCreationResult result = CordaNodeCreator.getInstance().createPartyLoadAll("http://network-map-service-0.network-map-service", "8080", "O=PartyB, L=New York, C=US", "partyb", "corda-dynamic-zone-ns-test", "512", "500", "512", "500", "D:\\ideaIU-2019.2.win-workspace\\corda-docker-kubernetes\\docker-corda\\dynamic-compatibility-zone\\kubernetes-client-k8s-dynamic-compatibility-zone-template\\LPV\\party-node-template-pvc-v2.yaml");
+//        LOGGER.info(GSonUtil.getInstance().object2Json(result));
+
+        //O=PartyC,L=Paris,C=FR with pvc template
+//        CordaNodeCreationResult result = CordaNodeCreator.getInstance().createPartyLoadAll("http://network-map-service-0.network-map-service", "8080", "O=PartyC, L=Paris, C=FR", "partyc", "corda-dynamic-zone-ns-test", "512", "500", "512", "500", "D:\\ideaIU-2019.2.win-workspace\\corda-docker-kubernetes\\docker-corda\\dynamic-compatibility-zone\\kubernetes-client-k8s-dynamic-compatibility-zone-template\\LPV\\party-node-template-pvc-v2.yaml");
+//        LOGGER.info(GSonUtil.getInstance().object2Json(result));
+
+
+        //O=Notary,L=London,C=GB v2
+//        CordaNodeCreationResult result = CordaNodeCreator.getInstance().createNotaryLoadAll("http://network-map-service-0.network-map-service", "8080", "notary", "corda-dynamic-zone-ns-test", "O=Notary, L=London, C=GB", "512", "500", "512", "500", "D:\\ideaIU-2019.2.win-workspace\\corda-docker-kubernetes\\docker-corda\\dynamic-compatibility-zone\\kubernetes-client-k8s-dynamic-compatibility-zone-template\\notary-node-template-v2.yaml");
+//        LOGGER.info(GSonUtil.getInstance().object2Json(result));
+
+        //O=PartyA,L=London,C=GB  v2
+//        CordaNodeCreationResult result = CordaNodeCreator.getInstance().createPartyLoadAll("http://network-map-service-0.network-map-service", "8080", "O=PartyA, L=London, C=GB", "partya", "corda-dynamic-zone-ns-test", "500", "500", "500", "500", "D:\\ideaIU-2019.2.win-workspace\\corda-docker-kubernetes\\docker-corda\\dynamic-compatibility-zone\\kubernetes-client-k8s-dynamic-compatibility-zone-template\\party-node-template-v2.yaml");
+//        LOGGER.info(GSonUtil.getInstance().object2Json(result));
+//
+//        //O=PartyB,L=New York,C=US  v2
+//        CordaNodeCreationResult result = CordaNodeCreator.getInstance().createPartyLoadAll("http://network-map-service-0.network-map-service", "8080", "O=PartyB, L=New York, C=US", "partyb", "corda-dynamic-zone-ns-test", "512", "500", "512", "500", "D:\\ideaIU-2019.2.win-workspace\\corda-docker-kubernetes\\docker-corda\\dynamic-compatibility-zone\\kubernetes-client-k8s-dynamic-compatibility-zone-template\\party-node-template-v2.yaml");
+//        LOGGER.info(GSonUtil.getInstance().object2Json(result));
+
+        //O=PartyC,L=Paris,C=FR  v2
+//        CordaNodeCreationResult result = CordaNodeCreator.getInstance().createPartyLoadAll("http://network-map-service-0.network-map-service", "8080", "O=PartyC, L=Paris, C=FR", "partyc", "corda-dynamic-zone-ns-test", "512", "500", "512", "500", "D:\\ideaIU-2019.2.win-workspace\\corda-docker-kubernetes\\docker-corda\\dynamic-compatibility-zone\\kubernetes-client-k8s-dynamic-compatibility-zone-template\\party-node-template-v2.yaml");
+//        LOGGER.info(GSonUtil.getInstance().object2Json(result));
+
+
+        //notary postgres
+//        CordaNodeCreationResult result = CordaNodeCreator.getInstance().createNodePostgresLoadAll("notary","corda-dynamic-zone-ns-test", "512", "500", "512", "500", "D:\\ideaIU-2019.2.win-workspace\\corda-docker-kubernetes\\docker-corda\\dynamic-compatibility-zone\\kubernetes-client-k8s-dynamic-compatibility-zone-template\\postgressql.yaml");
+//        LOGGER.info(GSonUtil.getInstance().object2Json(result));
+
+        //partya postgres
+        CordaNodeCreationResult result = CordaNodeCreator.getInstance().createNodePostgresLoadAll("partya", "corda-dynamic-zone-ns-test", "512", "500", "512", "500", "D:\\ideaIU-2019.2.win-workspace\\corda-docker-kubernetes\\docker-corda\\dynamic-compatibility-zone\\kubernetes-client-k8s-dynamic-compatibility-zone-template\\postgressql.yaml");
         LOGGER.info(GSonUtil.getInstance().object2Json(result));
+
+        //partyb postgres
+//        CordaNodeCreationResult result = CordaNodeCreator.getInstance().createNodePostgresLoadAll("partyb","corda-dynamic-zone-ns-test", "512", "500", "512", "500", "D:\\ideaIU-2019.2.win-workspace\\corda-docker-kubernetes\\docker-corda\\dynamic-compatibility-zone\\kubernetes-client-k8s-dynamic-compatibility-zone-template\\postgressql.yaml");
+//        LOGGER.info(GSonUtil.getInstance().object2Json(result));
+
+        //partyc postgres
+//        CordaNodeCreationResult result = CordaNodeCreator.getInstance().createNodePostgresLoadAll("partyc","corda-dynamic-zone-ns-test", "512", "500", "512", "500", "D:\\ideaIU-2019.2.win-workspace\\corda-docker-kubernetes\\docker-corda\\dynamic-compatibility-zone\\kubernetes-client-k8s-dynamic-compatibility-zone-template\\postgressql.yaml");
+//        LOGGER.info(GSonUtil.getInstance().object2Json(result));
     }
 }
