@@ -1,4 +1,4 @@
-package com.ml.kubernetes.ApiClient;/*
+package com.ml.kubernetes.ApiClient.multichain;/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -18,24 +18,24 @@ import java.util.logging.Logger;
 /**
  * @author Liudan_Luo
  */
-public class CordaKubernetesClientApiClient implements com.ml.kubernetes.ApiClient.ApiClient {
-    private static final CordaKubernetesClientApiClient instance = new CordaKubernetesClientApiClient();
+public class MultichainKubernetesClientApiClient implements com.ml.kubernetes.ApiClient.ApiClient {
+    private static final MultichainKubernetesClientApiClient instance = new MultichainKubernetesClientApiClient();
     private ApiClient client;
 
-    private CordaKubernetesClientApiClient() {
-        String kubeConfigPath = "src/main/resources/kubectl-corda.kubeconfig";
+    private MultichainKubernetesClientApiClient() {
+        String kubeConfigPath = "src/main/resources/kubectl.kubeconfig";
         try {
             client = ClientBuilder.kubeconfig(KubeConfig.loadKubeConfig(new FileReader(kubeConfigPath))).build();
             Configuration.setDefaultApiClient(client);
             client.setDebugging(false);
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(CordaKubernetesClientApiClient.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MultichainKubernetesClientApiClient.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(CordaKubernetesClientApiClient.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MultichainKubernetesClientApiClient.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public static CordaKubernetesClientApiClient getInstance() {
+    public static MultichainKubernetesClientApiClient getInstance() {
         return instance;
     }
 }

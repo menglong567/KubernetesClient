@@ -1,8 +1,9 @@
-package com.ml.kubernetes.util;
+package com.ml.kubernetes.util.fabric;
 
-import com.ml.kubernetes.ApiClient.CordaKubernetesClientApiClient;
-import com.ml.kubernetes.ApiClient.MultichainKubernetesClientApiClient;
+import com.ml.kubernetes.ApiClient.corda.CordaKubernetesClientApiClient;
+import com.ml.kubernetes.ApiClient.fabric.FabricKubernetesClientApiClient;
 import com.ml.kubernetes.result.V1NamespaceCreateResult;
+import com.ml.kubernetes.util.GSonUtil;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.openapi.models.*;
@@ -13,14 +14,14 @@ import java.util.List;
 /**
  * @author Liudan_Luo
  */
-public class CordaKubernetesClientNamespaceUtil {
-    private static final CordaKubernetesClientNamespaceUtil instance = new CordaKubernetesClientNamespaceUtil();
-    private static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(CordaKubernetesClientNamespaceUtil.class);
+public class FabricKubernetesClientNamespaceUtil {
+    private static final FabricKubernetesClientNamespaceUtil instance = new FabricKubernetesClientNamespaceUtil();
+    private static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(FabricKubernetesClientNamespaceUtil.class);
 
-    private CordaKubernetesClientNamespaceUtil() {
+    private FabricKubernetesClientNamespaceUtil() {
     }
 
-    public static CordaKubernetesClientNamespaceUtil getInstance() {
+    public static FabricKubernetesClientNamespaceUtil getInstance() {
         return instance;
     }
 
@@ -29,7 +30,7 @@ public class CordaKubernetesClientNamespaceUtil {
      * @return
      */
     public boolean queryNamespace(String name) {
-        CordaKubernetesClientApiClient.getInstance();
+        FabricKubernetesClientApiClient.getInstance();
         CoreV1Api api = new CoreV1Api();
         V1NamespaceList nsl = new V1NamespaceList();
         try {
@@ -54,7 +55,7 @@ public class CordaKubernetesClientNamespaceUtil {
      * @return
      */
     public V1NamespaceCreateResult createNamespace(String name) {
-        CordaKubernetesClientApiClient.getInstance();
+        FabricKubernetesClientApiClient.getInstance();
         CoreV1Api api = new CoreV1Api();
         V1Namespace ns = new V1Namespace();
         V1ObjectMeta meta = new V1ObjectMeta();
@@ -98,7 +99,7 @@ public class CordaKubernetesClientNamespaceUtil {
      * @return
      */
     public V1Status deleteNamespace(String name, String namespace) {
-        CordaKubernetesClientApiClient.getInstance();
+        FabricKubernetesClientApiClient.getInstance();
         CoreV1Api api = new CoreV1Api();
         V1Status deleteResult = null;
         try {

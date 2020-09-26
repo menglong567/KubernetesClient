@@ -1,4 +1,4 @@
-package com.ml.kubernetes.ApiClient;/*
+package com.ml.kubernetes.ApiClient.fabric;/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -18,24 +18,24 @@ import java.util.logging.Logger;
 /**
  * @author Liudan_Luo
  */
-public class MultichainKubernetesClientApiClient implements com.ml.kubernetes.ApiClient.ApiClient {
-    private static final MultichainKubernetesClientApiClient instance = new MultichainKubernetesClientApiClient();
+public class FabricKubernetesClientApiClient implements com.ml.kubernetes.ApiClient.ApiClient {
+    private static final FabricKubernetesClientApiClient instance = new FabricKubernetesClientApiClient();
     private ApiClient client;
 
-    private MultichainKubernetesClientApiClient() {
-        String kubeConfigPath = "src/main/resources/kubectl.kubeconfig";
+    private FabricKubernetesClientApiClient() {
+        String kubeConfigPath = "src/main/resources/kubectl-fabric.kubeconfig";
         try {
             client = ClientBuilder.kubeconfig(KubeConfig.loadKubeConfig(new FileReader(kubeConfigPath))).build();
             Configuration.setDefaultApiClient(client);
             client.setDebugging(false);
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(MultichainKubernetesClientApiClient.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FabricKubernetesClientApiClient.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(MultichainKubernetesClientApiClient.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FabricKubernetesClientApiClient.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public static MultichainKubernetesClientApiClient getInstance() {
+    public static FabricKubernetesClientApiClient getInstance() {
         return instance;
     }
 }

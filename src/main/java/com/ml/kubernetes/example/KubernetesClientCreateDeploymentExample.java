@@ -1,6 +1,6 @@
 package com.ml.kubernetes.example;
 
-import com.ml.kubernetes.ApiClient.MultichainKubernetesClientApiClient;
+import com.ml.kubernetes.ApiClient.multichain.MultichainKubernetesClientApiClient;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.AppsV1Api;
 import io.kubernetes.client.openapi.apis.CoreV1Api;

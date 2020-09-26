@@ -26,13 +26,13 @@ public class CordaNodeCreatorController {
 
     @RequestMapping(value = "/corda/networkmapservice/create/form", method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded")
     @ResponseBody
-    public String createMasterNodeForm(@RequestParam(value = "networkMapServiceNodeName", required = true) String networkMapServiceNodeName,
-                                       @RequestParam(value = "networkMapServiceNamespace", required = true) String networkMapServiceNamespace,
-                                       @RequestParam(value = "networkMapServiceNodeport", required = true) String networkMapServiceNodeport,
-                                       @RequestParam(value = "memoryRequest", required = true) String memoryRequest,
-                                       @RequestParam(value = "cpuRequest", required = true) String cpuRequest,
-                                       @RequestParam(value = "memoryLimit", required = true) String memoryLimit,
-                                       @RequestParam(value = "cpuLimit", required = true) String cpuLimit) {
+    public String createNetworkMapNodeForm(@RequestParam(value = "networkMapServiceNodeName", required = true) String networkMapServiceNodeName,
+                                           @RequestParam(value = "networkMapServiceNamespace", required = true) String networkMapServiceNamespace,
+                                           @RequestParam(value = "networkMapServiceNodeport", required = true) String networkMapServiceNodeport,
+                                           @RequestParam(value = "memoryRequest", required = true) String memoryRequest,
+                                           @RequestParam(value = "cpuRequest", required = true) String cpuRequest,
+                                           @RequestParam(value = "memoryLimit", required = true) String memoryLimit,
+                                           @RequestParam(value = "cpuLimit", required = true) String cpuLimit) {
         CordaNodeCreationResult result = CordaNodeCreator.getInstance().createNetworkMapServiceLoadAll(networkMapServiceNodeName, networkMapServiceNamespace, networkMapServiceNodeport, memoryRequest, cpuRequest, memoryLimit, cpuLimit, cordaNetworkMapServiceTemplate);
         return GSonUtil.getInstance().object2Json(result);
     }

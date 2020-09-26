@@ -1,14 +1,11 @@
-package com.ml.kubernetes.util;
+package com.ml.kubernetes.util.corda;
 
-import com.ml.kubernetes.ApiClient.MultichainKubernetesClientApiClient;
+import com.ml.kubernetes.ApiClient.corda.CordaKubernetesClientApiClient;
 import com.ml.kubernetes.result.V1NamespaceCreateResult;
+import com.ml.kubernetes.util.GSonUtil;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
-import io.kubernetes.client.openapi.models.V1DeleteOptions;
-import io.kubernetes.client.openapi.models.V1Namespace;
-import io.kubernetes.client.openapi.models.V1NamespaceList;
-import io.kubernetes.client.openapi.models.V1ObjectMeta;
-import io.kubernetes.client.openapi.models.V1Status;
+import io.kubernetes.client.openapi.models.*;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
@@ -16,14 +13,14 @@ import java.util.List;
 /**
  * @author Liudan_Luo
  */
-public class MultichainKubernetesClientNamespaceUtil {
-    private static final MultichainKubernetesClientNamespaceUtil instance = new MultichainKubernetesClientNamespaceUtil();
-    private static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(MultichainKubernetesClientNamespaceUtil.class);
+public class CordaKubernetesClientNamespaceUtil {
+    private static final CordaKubernetesClientNamespaceUtil instance = new CordaKubernetesClientNamespaceUtil();
+    private static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(CordaKubernetesClientNamespaceUtil.class);
 
-    private MultichainKubernetesClientNamespaceUtil() {
+    private CordaKubernetesClientNamespaceUtil() {
     }
 
-    public static MultichainKubernetesClientNamespaceUtil getInstance() {
+    public static CordaKubernetesClientNamespaceUtil getInstance() {
         return instance;
     }
 
@@ -32,7 +29,7 @@ public class MultichainKubernetesClientNamespaceUtil {
      * @return
      */
     public boolean queryNamespace(String name) {
-        MultichainKubernetesClientApiClient.getInstance();
+        CordaKubernetesClientApiClient.getInstance();
         CoreV1Api api = new CoreV1Api();
         V1NamespaceList nsl = new V1NamespaceList();
         try {
@@ -57,7 +54,7 @@ public class MultichainKubernetesClientNamespaceUtil {
      * @return
      */
     public V1NamespaceCreateResult createNamespace(String name) {
-        MultichainKubernetesClientApiClient.getInstance();
+        CordaKubernetesClientApiClient.getInstance();
         CoreV1Api api = new CoreV1Api();
         V1Namespace ns = new V1Namespace();
         V1ObjectMeta meta = new V1ObjectMeta();
@@ -101,7 +98,7 @@ public class MultichainKubernetesClientNamespaceUtil {
      * @return
      */
     public V1Status deleteNamespace(String name, String namespace) {
-        MultichainKubernetesClientApiClient.getInstance();
+        CordaKubernetesClientApiClient.getInstance();
         CoreV1Api api = new CoreV1Api();
         V1Status deleteResult = null;
         try {

@@ -1,6 +1,6 @@
 package com.ml.kubernetes.example;
 
-import com.ml.kubernetes.util.MultichainKubernetesClientNamespaceUtil;
+import com.ml.kubernetes.util.multichain.MultichainKubernetesClientNamespaceUtil;
 
 /**
  * @author Liudan_Luo

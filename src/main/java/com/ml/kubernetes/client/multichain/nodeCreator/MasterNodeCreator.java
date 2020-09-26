@@ -1,11 +1,11 @@
 package com.ml.kubernetes.client.multichain.nodeCreator;
 
-import com.ml.kubernetes.ApiClient.MultichainKubernetesClientApiClient;
+import com.ml.kubernetes.ApiClient.multichain.MultichainKubernetesClientApiClient;
 import com.ml.kubernetes.result.V1NamespaceCreateResult;
 import com.ml.kubernetes.client.multichain.model.MultichainNodeCreationResult;
 import com.ml.kubernetes.util.CommonUtil;
 import com.ml.kubernetes.util.FileReaderUtil;
-import com.ml.kubernetes.util.MultichainKubernetesClientNamespaceUtil;
+import com.ml.kubernetes.util.multichain.MultichainKubernetesClientNamespaceUtil;
 import com.ml.kubernetes.util.PlaceHolderUtil;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.apis.AppsV1Api;
