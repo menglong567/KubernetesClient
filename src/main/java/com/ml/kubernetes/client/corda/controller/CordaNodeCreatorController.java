@@ -94,16 +94,16 @@ public class CordaNodeCreatorController {
         return GSonUtil.getInstance().object2Json(result);
     }
 
-    @RequestMapping(value = "/corda/webserver/create/form", method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded")
+    @RequestMapping(value = "/corda/cordaClient/create/form", method = RequestMethod.POST, consumes = "application/x-www-form-urlencoded")
     @ResponseBody
-    public String createWebserverForm(@RequestParam(value = "NodeName", required = true) String NodeName,
-                                      @RequestParam(value = "NodeNamespace", required = true) String NodeNamespace,
-                                      @RequestParam(value = "WebserverNodeport", required = true) String WebserverNodeport,
-                                      @RequestParam(value = "memoryRequest", required = true) String memoryRequest,
-                                      @RequestParam(value = "cpuRequest", required = true) String cpuRequest,
-                                      @RequestParam(value = "memoryLimit", required = true) String memoryLimit,
-                                      @RequestParam(value = "cpuLimit", required = true) String cpuLimit) {
-        CordaNodeCreationResult result = CordaNodeCreator.getInstance().createCordaClientServerLoadAll(NodeNamespace, WebserverNodeport, memoryRequest, cpuRequest, memoryLimit, cpuLimit, cordaPartyWebserverv2Template);
+    public String createCordaClientForm(@RequestParam(value = "NodeName", required = true) String NodeName,
+                                        @RequestParam(value = "NodeNamespace", required = true) String NodeNamespace,
+                                        @RequestParam(value = "cordaClientServerNodeport", required = true) String cordaClientServerNodeport,
+                                        @RequestParam(value = "memoryRequest", required = true) String memoryRequest,
+                                        @RequestParam(value = "cpuRequest", required = true) String cpuRequest,
+                                        @RequestParam(value = "memoryLimit", required = true) String memoryLimit,
+                                        @RequestParam(value = "cpuLimit", required = true) String cpuLimit) {
+        CordaNodeCreationResult result = CordaNodeCreator.getInstance().createCordaClientServerLoadAll(NodeNamespace, cordaClientServerNodeport, memoryRequest, cpuRequest, memoryLimit, cpuLimit, cordaPartyWebserverv2Template);
         return GSonUtil.getInstance().object2Json(result);
     }
 }

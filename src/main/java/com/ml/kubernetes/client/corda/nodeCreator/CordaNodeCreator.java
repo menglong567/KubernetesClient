@@ -754,7 +754,7 @@ public class CordaNodeCreator {
     /****
      *
      * @param NodeNamespace
-     * @param WebserverNodeport
+     * @param cordaClientServerNodeport
      * @param memoryRequest
      * @param cpuRequest
      * @param memoryLimit
@@ -762,23 +762,23 @@ public class CordaNodeCreator {
      * @param partyWebserverv2Template
      * @return
      */
-    public CordaNodeCreationResult createCordaClientServerLoadAll(String NodeNamespace, String WebserverNodeport, String memoryRequest, String cpuRequest, String memoryLimit, String cpuLimit, String partyWebserverv2Template) {
+    public CordaNodeCreationResult createCordaClientServerLoadAll(String NodeNamespace, String cordaClientServerNodeport, String memoryRequest, String cpuRequest, String memoryLimit, String cpuLimit, String partyWebserverv2Template) {
         if (NodeNamespace == null || NodeNamespace.isEmpty()) {
             LOGGER.error("networkMapServicePort is null");
             return new CordaNodeCreationResult("networkMapServicePort is null", false);
         }
-        if (WebserverNodeport == null || WebserverNodeport.isEmpty()) {//here should another logic to check the x.509 name
+        if (cordaClientServerNodeport == null || cordaClientServerNodeport.isEmpty()) {//here should another logic to check the x.509 name
             LOGGER.error("WebserverNodeport is null");
             return new CordaNodeCreationResult("WebserverNodeport is null", false);
         }
-        if (!CommonUtil.getInstance().isInteger(WebserverNodeport)) {
-            LOGGER.error(WebserverNodeport + " is not a valid number");
-            return new CordaNodeCreationResult(WebserverNodeport + " is not a valid number", false);
+        if (!CommonUtil.getInstance().isInteger(cordaClientServerNodeport)) {
+            LOGGER.error(cordaClientServerNodeport + " is not a valid number");
+            return new CordaNodeCreationResult(cordaClientServerNodeport + " is not a valid number", false);
         }
         //verify the range of WebserverNodeport
-        if (Integer.parseInt(WebserverNodeport) < 30000 || Integer.parseInt(WebserverNodeport) > 32767) {
-            LOGGER.error(WebserverNodeport + " is beyond the valid range <30000,32767>");
-            return new CordaNodeCreationResult(WebserverNodeport + " is beyond the valid range from 30000 to 32767", false);
+        if (Integer.parseInt(cordaClientServerNodeport) < 30000 || Integer.parseInt(cordaClientServerNodeport) > 32767) {
+            LOGGER.error(cordaClientServerNodeport + " is beyond the valid range <30000,32767>");
+            return new CordaNodeCreationResult(cordaClientServerNodeport + " is beyond the valid range from 30000 to 32767", false);
         }
 
         if (memoryRequest == null || memoryRequest.isEmpty()) {
@@ -820,7 +820,7 @@ public class CordaNodeCreator {
         //fill the user input
         PlaceHolderUtil.getInstance().clearValues();
         PlaceHolderUtil.getInstance().addValues("NodeNamespace", NodeNamespace.toLowerCase());//a namespace is not allowed to have capital characters
-        PlaceHolderUtil.getInstance().addValues("WebserverNodeport", WebserverNodeport);
+        PlaceHolderUtil.getInstance().addValues("WebserverNodeport", cordaClientServerNodeport);
         PlaceHolderUtil.getInstance().addValues("memoryRequest", memoryRequest);
         PlaceHolderUtil.getInstance().addValues("cpuRequest", cpuRequest);
         PlaceHolderUtil.getInstance().addValues("memoryLimit", memoryLimit);
