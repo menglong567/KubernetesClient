@@ -159,7 +159,7 @@ public class SlaveNodeCreator {
         if (!MultichainKubernetesClientNamespaceUtil.getInstance().queryNamespace(slaveNodeNamespace)) {
             V1NamespaceCreateResult result = MultichainKubernetesClientNamespaceUtil.getInstance().createNamespace(slaveNodeNamespace);
             if (!result.isResult()) {
-                LOGGER.error("Namespace " + slaveNodeNamespace + " creation failed!");
+                LOGGER.error("Namespace " + slaveNodeNamespace + " creation failed:" + result.toString());
                 return new MultichainNodeCreationResult("Namespace " + slaveNodeNamespace + " creation failed!", false);
             }
         }
@@ -188,7 +188,7 @@ public class SlaveNodeCreator {
         headlessSvc = (V1Service) objs.get(1);
         nodeportSvc = (V1Service) objs.get(2);
 
-        Yaml.addModelMap("v1", "Service", V1Service.class);
+//        Yaml.addModelMap("v1", "Service", V1Service.class);
         CoreV1Api corev1 = new CoreV1Api();
 
         try {

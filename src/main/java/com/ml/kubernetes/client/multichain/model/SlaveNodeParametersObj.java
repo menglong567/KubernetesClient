@@ -15,6 +15,15 @@ public class SlaveNodeParametersObj {
     private String cpuLimit;
     private String nodeportnetworkPort;
     private String nodeportrpcPort;
+    private String multichainSlaveTemplate;
+
+    public String getMultichainSlaveTemplate() {
+        return multichainSlaveTemplate;
+    }
+
+    public void setMultichainSlaveTemplate(String multichainSlaveTemplate) {
+        this.multichainSlaveTemplate = multichainSlaveTemplate;
+    }
 
     public String getSlaveNodeName() {
         return slaveNodeName;

@@ -31,12 +31,14 @@ spec:
     spec:
       dnsConfig: {}
       dnsPolicy: ClusterFirst
+#      imagePullSecrets:
+#        - name:  harbor
       restartPolicy: Always
       schedulerName: default-scheduler
       terminationGracePeriodSeconds: 10    #当删除Pod时，等待时间
       containers:
         - name: kubernetesclient
-          image: 127.0.0.1:5000/kubernetesclient-client:1.1.0
+          image: 127.0.0.1:5000/menglong567:kubernetesclient-client-1.1.0
           imagePullPolicy: IfNotPresent
           ports:
             - name: port
@@ -44,6 +46,8 @@ spec:
           volumeMounts:
             - mountPath: /logs  #directory in docker container
               name: log
+            - mountPath: /kube-resources #directory in docker container
+              name: kube-resources
           env:
             - name: APP_NAME
               value: "kubernetesclient-server"
@@ -59,5 +63,9 @@ spec:
       volumes:
         - name: log
           hostPath:
-            path: /home/kubernetesclient-service-k8s/logs  # directory location on host
+            path: /home/corda-networks-dynamic-compatibility-zone-k8s/kubernetes-client-service-k8s/logs  # directory location on host
+            type: DirectoryOrCreate
+        - name: kube-resources
+          hostPath:
+            path: /media/sf_ideaIU-2019.2.win-workspace/kube-resources
             type: DirectoryOrCreate

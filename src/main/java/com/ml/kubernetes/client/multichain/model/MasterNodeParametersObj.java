@@ -14,6 +14,16 @@ public class MasterNodeParametersObj {
     private String nodeportnetworkPort;
     private String nodeportrpcPort;
 
+    public String getMultichainMasterTemplate() {
+        return multichainMasterTemplate;
+    }
+
+    public void setMultichainMasterTemplate(String multichainMasterTemplate) {
+        this.multichainMasterTemplate = multichainMasterTemplate;
+    }
+
+    private String multichainMasterTemplate;
+
     public String getMasterNodeName() {
         return masterNodeName;
     }

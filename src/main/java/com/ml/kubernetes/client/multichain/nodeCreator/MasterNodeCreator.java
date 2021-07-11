@@ -192,7 +192,7 @@ public class MasterNodeCreator {
         }
 
         CoreV1Api corev1 = new CoreV1Api();
-        Yaml.addModelMap("v1", "Service", V1Service.class);
+//        Yaml.addModelMap("v1", "Service", V1Service.class);
 
         V1Service headlessSvc;
         sub = new StringSubstitutor(PlaceHolderUtil.getInstance().getVlauesMap());
@@ -329,7 +329,7 @@ public class MasterNodeCreator {
         if (!MultichainKubernetesClientNamespaceUtil.getInstance().queryNamespace(namespace)) {
             V1NamespaceCreateResult result = MultichainKubernetesClientNamespaceUtil.getInstance().createNamespace(namespace);
             if (!result.isResult()) {
-                LOGGER.error("Namespace " + namespace + " creation failed!");
+                LOGGER.error("Namespace " + namespace + " creation failed:" + result.toString());
                 return new MultichainNodeCreationResult("Namespace " + namespace + " creation failed!", false);
             }
         }
@@ -358,7 +358,7 @@ public class MasterNodeCreator {
         headlessSvc = (V1Service) objs.get(1);
         nodeportSvc = (V1Service) objs.get(2);
 
-        Yaml.addModelMap("v1", "Service", V1Service.class);
+//        Yaml.addModelMap("v1", "Service", V1Service.class);
         CoreV1Api corev1 = new CoreV1Api();
         try {
             corev1.createNamespacedService(headlessSvc.getMetadata().getNamespace(), headlessSvc, null, null, null);

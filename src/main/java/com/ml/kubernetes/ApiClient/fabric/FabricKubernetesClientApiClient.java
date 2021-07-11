@@ -1,8 +1,4 @@
-package com.ml.kubernetes.ApiClient.fabric;/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+package com.ml.kubernetes.ApiClient.fabric;
 
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.Configuration;
@@ -23,7 +19,7 @@ public class FabricKubernetesClientApiClient implements com.ml.kubernetes.ApiCli
     private ApiClient client;
 
     private FabricKubernetesClientApiClient() {
-        String kubeConfigPath = "src/main/resources/kubectl-fabric.kubeconfig";
+        String kubeConfigPath = "/resources/kubectl-fabric.kubeconfig";
         try {
             client = ClientBuilder.kubeconfig(KubeConfig.loadKubeConfig(new FileReader(kubeConfigPath))).build();
             Configuration.setDefaultApiClient(client);

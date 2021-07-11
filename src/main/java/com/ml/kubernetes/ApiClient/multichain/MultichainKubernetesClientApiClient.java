@@ -1,8 +1,4 @@
-package com.ml.kubernetes.ApiClient.multichain;/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+package com.ml.kubernetes.ApiClient.multichain;
 
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.Configuration;
@@ -23,9 +19,8 @@ public class MultichainKubernetesClientApiClient implements com.ml.kubernetes.Ap
     private ApiClient client;
 
     private MultichainKubernetesClientApiClient() {
-        String kubeConfigPath = "src/main/resources/kubectl.kubeconfig";
         try {
-            client = ClientBuilder.kubeconfig(KubeConfig.loadKubeConfig(new FileReader(kubeConfigPath))).build();
+            client = ClientBuilder.kubeconfig(KubeConfig.loadKubeConfig(new FileReader("/resources/kubectl-multichain.kubeconfig"))).build();
             Configuration.setDefaultApiClient(client);
             client.setDebugging(false);
         } catch (FileNotFoundException ex) {

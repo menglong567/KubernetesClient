@@ -31,21 +31,22 @@ public class CordaKubernetesClientNamespaceUtil {
     public boolean queryNamespace(String name) {
         CordaKubernetesClientApiClient.getInstance();
         CoreV1Api api = new CoreV1Api();
-        V1NamespaceList nsl = new V1NamespaceList();
+        V1NamespaceList nsl = null;
         try {
             nsl = api.listNamespace(null, null, null, null, null, null, null, null, null);
             List<V1Namespace> nss = nsl.getItems();
             for (int a = 0; a < nss.size(); a++) {
                 V1Namespace ns = nss.get(a);
                 if (ns.getMetadata().getName().equals(name.toLowerCase())) { //a namespace must consist of lower case alphanumeric characters or '-', start with an alphabetic character, and end with an alphanumeric character (e.g. 'my-name',  or 'abc-123', regex used for validation is '[a-z]([-a-z0-9]*[a-z0-9])?')
+                    LOGGER.info("namespace:" + name + " exist");
                     return true;
                 }
             }
         } catch (ApiException e) {
             e.printStackTrace();
             LOGGER.error(e.getResponseBody());
-            System.out.println(e.getResponseBody());
         }
+        LOGGER.info("namespace:" + name + " doesn't exist");
         return false;
     }
 

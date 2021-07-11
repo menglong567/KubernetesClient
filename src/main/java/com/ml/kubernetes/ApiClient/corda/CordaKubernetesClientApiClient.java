@@ -1,8 +1,4 @@
-package com.ml.kubernetes.ApiClient.corda;/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+package com.ml.kubernetes.ApiClient.corda;
 
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.Configuration;
@@ -23,9 +19,8 @@ public class CordaKubernetesClientApiClient implements com.ml.kubernetes.ApiClie
     private ApiClient client;
 
     private CordaKubernetesClientApiClient() {
-        String kubeConfigPath = "src/main/resources/kubectl-corda.kubeconfig";
         try {
-            client = ClientBuilder.kubeconfig(KubeConfig.loadKubeConfig(new FileReader(kubeConfigPath))).build();
+            client = ClientBuilder.kubeconfig(KubeConfig.loadKubeConfig(new FileReader("/resources/kubectl-corda.kubeconfig"))).build();
             Configuration.setDefaultApiClient(client);
             client.setDebugging(false);
         } catch (FileNotFoundException ex) {
